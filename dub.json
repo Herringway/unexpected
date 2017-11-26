@@ -1,0 +1,9 @@
+{
+	"name": "dicey",
+	"authors": [
+		"Cameron"
+	],
+	"description": "A minimal D application.",
+	"copyright": "Copyright © 2017, Cameron",
+	"license": "BSL-1.0"
+}
