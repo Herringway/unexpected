@@ -3,7 +3,7 @@
 +/
 module dicey;
 
-import std.random;
+import std.random : Random, unpredictableSeed;
 import std.range : isOutputRange;
 
 enum Weight {
@@ -54,22 +54,24 @@ struct DiceTargetResults {
 		formattedWrite!"%(%s, %): %s"(sink, rolls, count);
 	}
 }
-
+/++
++ A set of dice, ready to be rolled.
++/
 struct Dice {
-	uint sets;
-	uint count;
-	uint sides;
-	uint numDiceQualified;
+	uint sets = 1;
+	uint count = 1;
+	uint sides = 6;
+	uint numDiceQualified = uint.max;
 	bool takeLowestRolls;
-	uint lowerRerollThreshold;
-	uint upperRerollThreshold;
+	uint lowerRerollThreshold = 0;
+	uint upperRerollThreshold = uint.max;
 	int valAdd;
 	Weight weighting;
 	private Random rng;
 	/++
 	+ Roll the dice according to the set parameters.
 	+/
-	DiceRollResults roll() {
+	DiceRollResults roll() @safe pure {
 		DiceRollResults output;
 		import std.algorithm : makeIndex, sort, sum;
 		import std.range : indexed;
@@ -124,7 +126,7 @@ struct Dice {
 	+ bounding = whether the target is an upper/lower bound
 	+ val = target to reach
 	+/
-	DiceTargetResults meetTarget(Bounding bounding = Bounding.lowerInclusive)(uint val) {
+	DiceTargetResults meetTarget(Bounding bounding = Bounding.lowerInclusive)(uint val) @safe {
 		DiceTargetResults output;
 		foreach (die; 0..count) {
 			auto result = rollOne();
@@ -148,8 +150,9 @@ struct Dice {
 		}
 		return output;
 	}
-	private uint rollOne() {
+	private uint rollOne() @safe pure {
 		import std.algorithm.comparison : max, min;
+		import std.random : uniform;
 		final switch (weighting) {
 			case Weight.noWeighting:
 				return uniform!"[]"(1, sides, rng);
@@ -164,12 +167,37 @@ struct Dice {
 				return min(sides, uniform!"[]"(1, sides, rng)+uniform!"[]"(0, sides/2, rng));
 		}
 	}
-	this(uint seed) {
+	/++
+	+ Initializes dice with a seed.
+	+/
+	this(uint seed) @safe pure nothrow @nogc {
 		rng = Random(seed);
 	}
 }
-
-auto genDice(string str, uint seed = unpredictableSeed()) {
+///
+@safe pure unittest {
+	auto dice = Dice(0);
+	dice.sides = 20;
+	assert(dice.roll().total == 5);
+}
+/**
+* Generates a set of dice from a string.
+*
+* Supports various modifiers.
+* [rolls]# = Number of sets of dice
+* -/+[count]/ = Count only the x highest or lowest dice
+* d[sides] = Number of sides on each die
+* w-/+ = Whether to skew the dice values negatively or positively
+* r[num] = Reroll dice above/below this value
+*
+* No modifiers is the same as just specifying number of sides.
+* Defaults to 1 set containing 1 unweighted die with six sides.
+*
+* Params:
+* str = string input
+* seed = seed used to initialize the dice
+*/
+auto genDice(string str, uint seed = unpredictableSeed()) @safe {
 	import std.conv : to;
 	import std.regex;
 	uint sets = 1;
@@ -224,6 +252,8 @@ auto genDice(string str, uint seed = unpredictableSeed()) {
 	auto sidesRegex = ctRegex!`d(\d+)`;
 	if (auto countMatched = matchFirst(str, sidesRegex)) {
 		sides = countMatched[1].to!uint;
+	} else if (str == "") {
+		//just stick to the default
 	} else {
 		sides = str.to!uint;
 	}
@@ -242,9 +272,18 @@ auto genDice(string str, uint seed = unpredictableSeed()) {
 	output.weighting = weighting;
 	return output;
 }
-
-unittest {
+///
+@safe unittest {
+	auto rolls = genDice("2d8r1").roll();
+}
+@safe unittest {
 	import std.stdio : writeln;
+	with(genDice("")) {
+		assert(sets == 1);
+		assert(count == 1);
+		assert(sides == 6);
+		assert(weighting == Weight.noWeighting);
+	}
 	with(genDice("30d6")) {
 		assert(count == 30);
 		assert(sides == 6);
