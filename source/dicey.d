@@ -58,18 +58,37 @@ struct DiceTargetResults {
 + A set of dice, ready to be rolled.
 +/
 struct Dice {
+	///Number of sets of dice to roll.
 	uint sets = 1;
+	///Number of dice per set to roll.
 	uint count = 1;
+	///Number of sides on each die.
 	uint sides = 6;
+	///Maximum number of dice to consider in results.
 	uint numDiceQualified = uint.max;
+	///Whether to take the lowest or highest rolls.
 	bool takeLowestRolls;
+	///Lower bound of results to reroll.
 	uint lowerRerollThreshold = 0;
+	///Upper bound of results to reroll.
 	uint upperRerollThreshold = uint.max;
+	///Value to add to the sum of each set.
 	int valAdd;
+	///What sort of weighting to apply to the dice, if any.
 	Weight weighting;
 	private Random rng;
 	/++
-	+ Roll the dice according to the set parameters.
+	+ Performs all rolls at once.
+	+/
+	DiceRollResults[] rolls() @safe pure {
+		DiceRollResults[] results;
+		foreach (i; 0..sets) {
+			results ~= roll();
+		}
+		return results;
+	}
+	/++
+	+ Roll one set of dice according to the set parameters.
 	+/
 	DiceRollResults roll() @safe pure {
 		DiceRollResults output;
