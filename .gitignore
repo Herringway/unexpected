@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/pcg
+pcg.so
+pcg.dylib
+pcg.dll
+pcg.a
+pcg.lib
+pcg-test-*
+*.exe
+*.o
+*.obj
+*.lst

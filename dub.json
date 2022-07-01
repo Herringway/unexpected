@@ -1,0 +1,9 @@
+{
+	"authors": [
+		"Cameron \"Herringway\" Ross"
+	],
+	"copyright": "Copyright © 2022, Cameron \"Herringway\" Ross",
+	"description": "A Permuted Congruential Generator RNG implementation",
+	"license": "BSL-1.0",
+	"name": "pcg"
+}
