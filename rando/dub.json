@@ -1,0 +1,16 @@
+{
+	"authors": [
+		"Cameron \"Herringway\" Ross"
+	],
+	"copyright": "Copyright © 2021, Cameron Ross",
+	"description": "Game Randomizer Library",
+	"license": "proprietary",
+	"name": "rando",
+	"dependencies": {
+		"reversineer": "~>0.0",
+		"magicalrainbows": "~>0.0"
+	},
+	"subPackages": [
+		"app"
+	]
+}
