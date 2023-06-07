@@ -2,13 +2,7 @@
 docs.json
 __dummy.html
 docs/
-/pcg
-pcg.so
-pcg.dylib
-pcg.dll
-pcg.a
-pcg.lib
-pcg-test-*
+*-test-*
 *.exe
 *.o
 *.obj
