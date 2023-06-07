@@ -1,7 +1,7 @@
-module rando.common;
+module unexpected.rando.common;
 
-import rando.names;
-import rando.palette;
+import unexpected.rando.names;
+import unexpected.rando.palette;
 
 import std.typecons;
 

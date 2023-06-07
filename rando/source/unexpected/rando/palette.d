@@ -1,10 +1,10 @@
-module rando.palette;
+module unexpected.rando.palette;
 
 import reversineer;
 import magicalrainbows.formats;
 import std.random : Random, uniform;
 
-import rando.common;
+import unexpected.rando.common;
 
 enum ColourRandomizationLevel {
 	randomHue,

@@ -1,4 +1,4 @@
-module rando.redistribute;
+module unexpected.rando.redistribute;
 
 import std.random : Random;
 

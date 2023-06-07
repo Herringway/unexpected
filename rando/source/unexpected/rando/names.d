@@ -1,9 +1,9 @@
-module rando.names;
+module unexpected.rando.names;
 
 import reversineer;
 import std.random : Random, uniform;
 
-import rando.common;
+import unexpected.rando.common;
 
 static immutable string[string] genTable;
 static immutable string[string] genTableStarts;

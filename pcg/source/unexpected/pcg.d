@@ -1,5 +1,5 @@
 ///
-module pcg;
+module unexpected.pcg;
 
 import std.meta : AliasSeq;
 import std.random : isUniformRNG;
