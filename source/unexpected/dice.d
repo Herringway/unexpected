@@ -1,7 +1,7 @@
 /++
 + Module for managing complex dice rolling methods.
 +/
-module dicey;
+module unexpected.dice;
 
 import std.random : Random, unpredictableSeed;
 import std.range : isOutputRange;
