@@ -12,7 +12,7 @@ private V rotr(V)(V value, uint r) {
 struct PCGConsts(X, I) {
 	import std.math.exponential : log2;
 	enum spareBits = (I.sizeof - X.sizeof) * 8;
-	enum wantedOpBits = cast(uint)log2(X.sizeof * 8);
+	enum wantedOpBits = cast(uint)log2(X.sizeof * 8.0);
 	struct xshrr {
 		enum opBits = spareBits >= wantedOpBits ? wantedOpBits : spareBits;
 		enum amplifier = wantedOpBits - opBits;
@@ -77,7 +77,7 @@ struct PCGConsts(X, I) {
 		enum extraShift = (X.sizeof - shift)/2;
 	}
 	struct rxsm {
-		enum opBits = cast(uint)log2(X.sizeof * 8) - 1;
+		enum opBits = cast(uint)log2(X.sizeof * 8.0) - 1;
 		enum shift = (I.sizeof - X.sizeof) * 8;
 		enum mask = (1 << opBits) - 1;
 	}
