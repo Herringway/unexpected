@@ -3,7 +3,7 @@
 +/
 module unexpected.dice;
 
-import std.random : Random, unpredictableSeed;
+import std.random : isSeedable, isUniformRNG, Random, unpredictableSeed;
 import std.range : isOutputRange;
 
 enum Weight {
@@ -54,10 +54,15 @@ struct DiceTargetResults {
 		formattedWrite!"%(%s, %): %s"(sink, rolls, count);
 	}
 }
+
+auto dice(RNG = Random)(uint seed) if (isUniformRNG!RNG && isSeedable!(RNG, uint)) {
+	return Dice!RNG(seed);
+}
+
 /++
 + A set of dice, ready to be rolled.
 +/
-struct Dice {
+struct Dice(RNG) if (isUniformRNG!RNG) {
 	///Number of sets of dice to roll.
 	uint sets = 1;
 	///Number of dice per set to roll.
@@ -76,7 +81,7 @@ struct Dice {
 	int valAdd;
 	///What sort of weighting to apply to the dice, if any.
 	Weight weighting;
-	private Random rng;
+	private RNG rng;
 	/++
 	+ Performs all rolls at once.
 	+/
@@ -186,16 +191,18 @@ struct Dice {
 				return min(sides, uniform!"[]"(1, sides, rng)+uniform!"[]"(0, sides/2, rng));
 		}
 	}
-	/++
-	+ Initializes dice with a seed.
-	+/
-	this(uint seed) @safe pure nothrow @nogc {
-		rng = Random(seed);
+	static if (isSeedable!(RNG, uint)) {
+		/++
+		+ Initializes dice with a seed.
+		+/
+		this(uint seed) @safe pure nothrow @nogc {
+			rng = RNG(seed);
+		}
 	}
 }
 ///
 @safe pure unittest {
-	auto dice = Dice(0);
+	auto dice = dice(0);
 	dice.sides = 20;
 	assert(dice.roll().total == 5);
 }
@@ -279,7 +286,7 @@ auto genDice(string str, uint seed = unpredictableSeed()) @safe {
 	if (numDiceQualified > count) {
 		numDiceQualified = count;
 	}
-	auto output = Dice(seed);
+	auto output = dice(seed);
 	output.sets = sets;
 	output.count = count;
 	output.sides = sides;
