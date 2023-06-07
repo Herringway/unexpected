@@ -13,3 +13,5 @@ pcg-test-*
 *.o
 *.obj
 *.lst
+dub.selections.json
+*.pdb
