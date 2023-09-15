@@ -220,6 +220,14 @@ struct PCG(T, S, alias func, S multiplier = DefaultPCGMultiplier!S, S increment 
 	enum bool isUniformRandom = true;
 	enum T min = T.min;
 	enum T max = T.max;
+	const(S) toSiryulType()() const @safe {
+		return state;
+	}
+	static PCG fromSiryulType()(S val) @safe {
+		PCG result;
+		result.state = val;
+		return result;
+	}
 }
 
 template DefaultPCGMultiplier(T) if (isIntegral!T) {
