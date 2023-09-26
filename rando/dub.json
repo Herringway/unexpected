@@ -9,8 +9,5 @@
 	"dependencies": {
 		"reversineer": "~>0.0",
 		"magicalrainbows": "~>0.0"
-	},
-	"subPackages": [
-		"app"
-	]
+	}
 }
