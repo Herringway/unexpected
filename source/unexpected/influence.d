@@ -3,7 +3,9 @@ module unexpected.influence;
 
 import std.range : ElementType;
 
-auto influencedChoice(Range, Rand, Element = ElementType!Range)(double luck, Rand rng, Range range) if (is(typeof(ElementType!Range.min) == ElementType!Range) && is(typeof(ElementType!Range.max) == ElementType!Range)) {
+enum hasMinMax(T) = is(typeof(T.min) == typeof(T.max)) && is(typeof(T.min) == T);
+
+auto influencedChoice(Range, Rand, Element = ElementType!Range)(double luck, Rand rng, Range range) if (hasMinMax!(ElementType!Range)) {
 	return influencedChoice(luck, rng, range, ElementType!Range.min, ElementType!Range.max);
 }
 auto influencedChoice(Range, Rand, Element = ElementType!Range)(double luck, Rand rng, Range range, Element worst, Element best)
