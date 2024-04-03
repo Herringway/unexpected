@@ -5,10 +5,10 @@ import std.range : ElementType;
 
 enum hasMinMax(T) = is(typeof(T.min) == typeof(T.max)) && is(typeof(T.min) == T);
 
-auto influencedChoice(Range, Rand, Element = ElementType!Range)(double luck, Rand rng, Range range) if (hasMinMax!(ElementType!Range)) {
+auto influencedChoice(Range, Rand, Element = ElementType!Range)(double luck, ref Rand rng, Range range) if (hasMinMax!(ElementType!Range)) {
 	return influencedChoice(luck, rng, range, ElementType!Range.min, ElementType!Range.max);
 }
-auto influencedChoice(Range, Rand, Element = ElementType!Range)(double luck, Rand rng, Range range, Element worst, Element best)
+auto influencedChoice(Range, Rand, Element = ElementType!Range)(double luck, ref Rand rng, Range range, Element worst, Element best)
 	in(!range.empty, "Nothing to choose")
 	in(best >= worst, "Worst value must be less than best")
 	out(result; result >= worst, "Result is less than worst value")
