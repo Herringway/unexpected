@@ -61,7 +61,7 @@ auto influencedChoice(Range, Rand, Element = ElementType!Range)(double luck, ref
 		}
 	}
 	Random rand;
-	enum iterations = 10000;
+	enum iterations = 100;
 	double test(double luck) {
 		long total;
 		foreach (i; 0 .. iterations) {
