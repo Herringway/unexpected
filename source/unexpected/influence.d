@@ -87,3 +87,43 @@ auto influencedChoice(Range, Rand, Element = ElementType!Range)(double luck, ref
 	assert(test2(-double.infinity, 0, 100) == 0);
 	assert(test2(0.0, 0, 100) > test2(-1.0, 0, 100));
 }
+
+auto influencedWeightedChoice(Range, Weights, Rand, Element = ElementType!Range)(double luck, ref Rand rng, Range range, Weights weights) if (hasMinMax!(ElementType!Range)) {
+	return influencedWeightedChoice(luck, rng, range, weights, Element.min, Element.max);
+}
+auto influencedWeightedChoice(Range, Weights, Rand, Element = ElementType!Range)(double luck, ref Rand rng, Range range, Weights weights, Element worst, Element best) {
+	import std.random : dice;
+	import std.range : drop, front, generate;
+	return influencedChoice(luck, rng, generate!({ return range.drop(dice(rng, weights)).front; }), worst, best);
+}
+
+@safe pure unittest {
+	import std.random : Random, uniform;
+	import std.range : iota;
+	static struct Result {
+		enum min = Result(0);
+		enum max = Result(100);
+		int x;
+		int opCmp(Result b) const pure @safe {
+			return x - b.x;
+		}
+	}
+	Random rand;
+	enum iterations = 100;
+	enum vals = [100, 50, 33, 0, 25];
+	double test2(double luck, int min, int max) {
+		long total;
+		foreach (i; 0 .. iterations) {
+			const value = influencedWeightedChoice(luck, rand, vals, iota(5), min, max);
+			assert(value >= min);
+			assert(value <= max);
+			total += value;
+		}
+		return total / double(iterations);
+	}
+	assert(test2(0.0, 0, 100) < test2(1.0, 0, 100));
+	assert(test2(0.0, 0, 100) > test2(-1.0, 0, 100));
+	assert(test2(double.infinity, 0, 100) == 100);
+	assert(test2(-double.infinity, 0, 100) == 0);
+	assert(test2(0.0, 0, 100) > test2(-1.0, 0, 100));
+}
