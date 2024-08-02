@@ -127,3 +127,41 @@ auto influencedWeightedChoice(Range, Weights, Rand, Element = ElementType!Range)
 	assert(test2(-double.infinity, 0, 100) == 0);
 	assert(test2(0.0, 0, 100) > test2(-1.0, 0, 100));
 }
+
+auto influencedUniform(Rand, T)(double luck, ref Rand rng, T worst, T best) {
+	import std.random : uniform;
+	static auto uniformRange(Rand rng, T worst, T best) {
+		struct Result {
+			T front;
+			enum bool empty = false;
+			void popFront() {
+				front = uniform(worst, best, rng);
+			}
+		}
+		Result result;
+		result.popFront();
+		return result;
+	}
+	return influencedChoice(luck, rng, uniformRange(rng, worst, best), worst, best);
+}
+
+@safe pure unittest {
+	import std.random : Random;
+	Random rand;
+	enum iterations = 100;
+	double test(double luck, int min, int max) {
+		long total;
+		foreach (i; 0 .. iterations) {
+			const value = influencedUniform(luck, rand, min, max);
+			assert(value >= min);
+			assert(value <= max);
+			total += value;
+		}
+		return total / double(iterations);
+	}
+	assert(test(0.0, 0, 100) < test(1.0, 0, 100));
+	assert(test(0.0, 0, 100) > test(-1.0, 0, 100));
+	assert(test(double.infinity, 0, 100) == 100);
+	assert(test(-double.infinity, 0, 100) == 0);
+	assert(test(0.0, 0, 100) > test(-1.0, 0, 100));
+}
