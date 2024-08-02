@@ -98,7 +98,7 @@ auto influencedWeightedChoice(Range, Weights, Rand, Element = ElementType!Range)
 }
 
 @safe pure unittest {
-	import std.random : Random, uniform;
+	import std.random : Random;
 	import std.range : iota;
 	static struct Result {
 		enum min = Result(0);
