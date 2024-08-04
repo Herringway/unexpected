@@ -69,6 +69,11 @@ auto influencedChoice(Range, Rand, Element = ElementType!Range)(double luck, ref
 		}
 		return total / double(iterations);
 	}
+	assert(test(0.0) < test(1.0));
+	assert(test(0.0) > test(-1.0));
+	assert(test(double.infinity) == 100);
+	assert(test(-double.infinity) == 0);
+
 	double test2(double luck, int min = int.min, int max = int.max) {
 		long total;
 		foreach (i; 0 .. iterations) {
