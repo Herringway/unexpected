@@ -105,14 +105,6 @@ auto influencedWeightedChoice(Range, Weights, Rand, Element = ElementType!Range)
 @safe pure unittest {
 	import std.random : Random;
 	import std.range : iota;
-	static struct Result {
-		enum min = Result(0);
-		enum max = Result(100);
-		int x;
-		int opCmp(Result b) const pure @safe {
-			return x - b.x;
-		}
-	}
 	Random rand;
 	enum iterations = 100;
 	enum vals = [100, 50, 33, 0, 25];
