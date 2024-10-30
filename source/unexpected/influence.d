@@ -134,6 +134,11 @@ auto influencedChoiceCommon(bool useWorstBest = true, Range, Rand, Element = Ele
 auto influencedWeightedChoice(Range, Weights, Rand, Element = ElementType!Range)(double luck, ref Rand rng, Range range, Weights weights) if (hasMinMax!(ElementType!Range)) {
 	return influencedWeightedChoice(luck, rng, range, weights, Element.min, Element.max);
 }
+auto influencedWeightedChoice(Range, Weights, Rand, Element = ElementType!Range)(double luck, ref Rand rng, Range range, Weights weights) if (!hasMinMax!(ElementType!Range)) {
+	import std.random : dice;
+	import std.range : drop, front, generate;
+	return influencedChoiceCommon!false(luck, rng, generate!({ return range.drop(dice(rng, weights)).front; }), range.front, range.front);
+}
 auto influencedWeightedChoice(Range, Weights, Rand, Element = ElementType!Range)(double luck, ref Rand rng, Range range, Weights weights, Element worst, Element best) {
 	import std.random : dice;
 	import std.range : drop, front, generate;
